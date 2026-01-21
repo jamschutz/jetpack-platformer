@@ -584,10 +584,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   speed: 15
-  walkAcceleration: 75
+  walkAcceleration: 150
   airAcceleration: 30
   groundDeceleration: 70
   jumpHeight: 4
+  gravity: 50
 --- !u!61 &1267007588
 BoxCollider2D:
   m_ObjectHideFlags: 0

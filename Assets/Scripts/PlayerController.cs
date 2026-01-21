@@ -14,12 +14,14 @@ public class PlayerController : MonoBehaviour
     public float airAcceleration = 30;
     public float groundDeceleration = 70;
     public float jumpHeight = 4;
+    public float gravity = 25;
 
 
 
     // ------------ private ----------- //
     private BoxCollider2D collider;
     private Vector2 velocity;
+    private bool isGrounded;
 
     // helpers
     private readonly KeyCode[] leftKeys = { KeyCode.A, KeyCode.LeftArrow };
@@ -42,6 +44,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        Jump();
+        ApplyGravity();
         Move();
         CheckCollision();
     }
@@ -75,7 +79,19 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
+        if(!isGrounded)
+            return;
 
+        velocity.y = 0;
+        if(GotInput(jumpKeys, true)) {
+            velocity.y = Mathf.Sqrt(2 * jumpHeight * gravity);
+        }
+    }
+
+
+    private void ApplyGravity()
+    {
+        velocity.y -= gravity * Time.deltaTime;
     }
 
 
@@ -84,6 +100,7 @@ public class PlayerController : MonoBehaviour
     {
         // get all colliders we are colliding with
         Collider2D[] hits = Physics2D.OverlapBoxAll(transform.position, collider.size, 0);
+        isGrounded = false;
 
         // and move ourselves out of collision for each one
         foreach(var hit in hits) {
@@ -96,7 +113,13 @@ public class PlayerController : MonoBehaviour
             if(distance.isOverlapped) {
                 // move away from collider
                 transform.Translate(distance.pointA - distance.pointB);
-                velocity.x = 0;
+
+                // check grounded
+                if(Vector2.Angle(distance.normal, Vector2.up) < 90 && velocity.y < 0)
+                    isGrounded = true;
+                // otherwise, hit an object, set x vel to 0
+                else
+                    velocity.x = 0;
             }
         }
     }
