@@ -1,5 +1,6 @@
+// taken from: https://roystan.net/articles/character-controller-2d/
+
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -42,6 +43,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         Move();
+        CheckCollision();
     }
 
 
@@ -74,6 +76,29 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
 
+    }
+
+
+    // NOTE: for this to work, we set "Auto Sync Transforms" to ON under ProjectSettings > Physics2D
+    private void CheckCollision()
+    {
+        // get all colliders we are colliding with
+        Collider2D[] hits = Physics2D.OverlapBoxAll(transform.position, collider.size, 0);
+
+        // and move ourselves out of collision for each one
+        foreach(var hit in hits) {
+            // ignore our own collider...
+            if(hit == collider) continue;
+
+            // get distance from us to collider
+            var distance = hit.Distance(collider);
+            // double check we are still overlapping (possible we fixed this in a previous iteration)
+            if(distance.isOverlapped) {
+                // move away from collider
+                transform.Translate(distance.pointA - distance.pointB);
+                velocity.x = 0;
+            }
+        }
     }
     
 
