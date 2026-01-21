@@ -64,13 +64,17 @@ public class PlayerController : MonoBehaviour
         float moveInput = GotInput(leftKeys)?  -1.0f : 0.0f;
         moveInput +=      GotInput(rightKeys)?  1.0f : 0.0f;
 
+        // swap acceleration / deceleration depending on if we're in the air or not
+        float acceleration = isGrounded? walkAcceleration : airAcceleration;
+        float deceleration = isGrounded? groundDeceleration : 0;
+
         // if we got move input, accelerate towards top speed
         if(moveInput != 0) {
-            velocity.x = Mathf.MoveTowards(velocity.x, speed * moveInput, walkAcceleration * Time.deltaTime);
+            velocity.x = Mathf.MoveTowards(velocity.x, speed * moveInput, acceleration * Time.deltaTime);
         }
         // otherwise, decelerate to zero
         else {
-            velocity.x = Mathf.MoveTowards(velocity.x, 0, groundDeceleration * Time.deltaTime);
+            velocity.x = Mathf.MoveTowards(velocity.x, 0, deceleration * Time.deltaTime);
         }
 
         transform.Translate(velocity * Time.deltaTime);
