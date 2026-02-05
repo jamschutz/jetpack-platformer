@@ -47,7 +47,6 @@ public class CameraController : MonoBehaviour
 
     private void UpdateBounds(Vector2 move)
     {
-        Debug.Log($"moving camera: {move.ToString()}");
         // move camera
         transform.Translate(new Vector3(move.x, move.y, 0));
 

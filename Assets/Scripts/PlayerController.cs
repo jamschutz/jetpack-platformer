@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
         ApplyGravity();
         Move();
         CheckCollision();
+        Debug.Log($"velocity: {velocity.y}");
     }
 
 
